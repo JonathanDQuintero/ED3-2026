@@ -1,0 +1,12 @@
+../Drivers/src/lpc17xx_adc.c:47:6:ADC_Init	8	static
+../Drivers/src/lpc17xx_adc.c:60:6:ADC_DeInit	0	static
+../Drivers/src/lpc17xx_adc.c:66:6:ADC_BurstCmd	8	static
+../Drivers/src/lpc17xx_adc.c:76:6:ADC_PowerdownCmd	8	static
+../Drivers/src/lpc17xx_adc.c:86:6:ADC_StartCmd	8	static
+../Drivers/src/lpc17xx_adc.c:93:6:ADC_ChannelCmd	16	static
+../Drivers/src/lpc17xx_adc.c:104:6:ADC_EdgeStartConfig	8	static
+../Drivers/src/lpc17xx_adc.c:114:6:ADC_IntConfig	16	static
+../Drivers/src/lpc17xx_adc.c:125:12:ADC_GlobalGetStatus	8	static
+../Drivers/src/lpc17xx_adc.c:140:12:ADC_ChannelGetStatus	16	static
+../Drivers/src/lpc17xx_adc.c:156:10:ADC_GlobalGetData	0	static
+../Drivers/src/lpc17xx_adc.c:160:10:ADC_ChannelGetData	8	static

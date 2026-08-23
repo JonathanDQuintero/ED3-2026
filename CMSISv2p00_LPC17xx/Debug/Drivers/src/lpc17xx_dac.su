@@ -1,0 +1,5 @@
+../Drivers/src/lpc17xx_dac.c:56:6:DAC_UpdateValue	0	static
+../Drivers/src/lpc17xx_dac.c:61:6:DAC_SetBias	8	static
+../Drivers/src/lpc17xx_dac.c:47:6:DAC_Init	8	static
+../Drivers/src/lpc17xx_dac.c:71:6:DAC_ConfigDAConverterControl	8	static
+../Drivers/src/lpc17xx_dac.c:86:6:DAC_SetDMATimeOut	0	static

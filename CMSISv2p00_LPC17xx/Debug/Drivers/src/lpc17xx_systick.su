@@ -1,0 +1,4 @@
+../Drivers/src/lpc17xx_systick.c:51:6:SYSTICK_ExternalInit	24	static
+../Drivers/src/lpc17xx_systick.c:46:6:SYSTICK_InternalInit	8	static
+../Drivers/src/lpc17xx_systick.c:62:6:SYSTICK_Cmd	8	static
+../Drivers/src/lpc17xx_systick.c:71:6:SYSTICK_IntCmd	8	static
