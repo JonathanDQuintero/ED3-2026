@@ -5,7 +5,7 @@
 * 
 */
 
-#include "lpc17xx.h"
+#include "LPC17xx.h"
 
 #define RED_LED     22
 #define GREEN_LED   25
