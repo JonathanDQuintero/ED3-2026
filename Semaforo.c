@@ -72,15 +72,15 @@ void SysTick_Handler(void){
     //la interrupcion cada en 11 segundos, donde el led rojo estara encendido por 5 seg, el azul por 2 seg
     //y el verde por 4 seg
     if(i==0){
+        LPC_GPIO3->FIOSET= 1<<GREEN_LED;//Para que cuando se repita el ciclo el led verde no quede encendido y se apague
         i=1100;
-        LPC_GPIO0->FIOCLR= 1<<RED_LED;
-        LPC_GPIO3->FIOSET= 1<<BLUE_LED;
-        LPC_GPIO3->FIOSET= 1<<GREEN_LED;//enciende el led rojo y apaga los otros por que es activo por bajo
-    }else if(i==600){
+    }else if(i>600){
+        LPC_GPIO0->FIOCLR= 1<<RED_LED;//enciende el solo el led rojo, ya que lo demas inician apagados
+    }else if(i>400){
         LPC_GPIO0->FIOSET= 1<<RED_LED;
-        LPC_GPIO3->FIOCLR= 1<<BLUE_LED;
-    }else if(i==400){
+        LPC_GPIO3->FIOCLR= 1<<BLUE_LED;//enciende el led azul y apaga el rojo
+    }else if(i>0){
         LPC_GPIO3->FIOSET= 1<<BLUE_LED;
-        LPC_GPIO3->FIOCLR= 1<<GREEN_LED;
+        LPC_GPIO3->FIOCLR= 1<<GREEN_LED;//enciende el led verde y apaga el azul
     }
 } 
