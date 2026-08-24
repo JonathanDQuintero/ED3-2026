@@ -67,7 +67,7 @@ void confSystick(void){
 
 }
 void SysTick_Handler(void){
-    static uint32_t i=1100;// static por que quiero que conserve su valor entre interrupciones, que lo recuerde, y que no se reinicie cada vez que se ejecute la interrupcion
+    static uint32_t i=1100; // static por que quiero que conserve su valor entre interrupciones, que lo recuerde, y que no se reinicie cada vez que se ejecute la interrupcion
     i--;
     //la interrupcion cada en 11 segundos, donde el led rojo estara encendido por 5 seg, el azul por 2 seg
     //y el verde por 4 seg
