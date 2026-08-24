@@ -11,7 +11,6 @@
 #define GREEN_LED   25
 #define BLUE_LED    26
 
-volatile uint32_t i=1100;
 
 void confPCB(void);
 void confSystick(void);
@@ -68,6 +67,7 @@ void confSystick(void){
 
 }
 void SysTick_Handler(void){
+    static uint32_t i=1100;// static por que quiero que conserve su valor entre interrupciones, que lo recuerde, y que no se reinicie cada vez que se ejecute la interrupcion
     i--;
     //la interrupcion cada en 11 segundos, donde el led rojo estara encendido por 5 seg, el azul por 2 seg
     //y el verde por 4 seg
@@ -84,3 +84,30 @@ void SysTick_Handler(void){
         LPC_GPIO3->FIOCLR= 1<<GREEN_LED;//enciende el led verde y apaga el azul
     }
 } 
+/*void SysTick_Handler(void)
+{
+    i--;
+
+    if(i == 600)
+    {
+        // Pasaron 5 segundos
+        LPC_GPIO0->FIOSET = 1 << RED_LED;   // apaga rojo
+        LPC_GPIO3->FIOCLR = 1 << BLUE_LED;  // prende azul
+    }
+    else if(i == 400)
+    {
+        // Pasaron 2 segundos más
+        LPC_GPIO3->FIOSET = 1 << BLUE_LED;   // apaga azul
+        LPC_GPIO3->FIOCLR = 1 << GREEN_LED;  // prende verde
+    }
+    else if(i == 0)
+    {
+        // Pasaron 4 segundos más
+        LPC_GPIO3->FIOSET = 1 << GREEN_LED; // apaga verde
+        LPC_GPIO0->FIOCLR = 1 << RED_LED;   // prende rojo
+
+        i = 1100;
+    }
+}
+ESTA FORMA ESTARIA BIEN PERO QUE TENGO QUE HACER QUE EL LED ROJO INICIO ENCENDIDO DIRECTAMENTE EN confPCB    
+    */
