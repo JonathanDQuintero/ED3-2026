@@ -69,7 +69,6 @@ void confPCB(void){
     LPC_GPIOINT->IO0IntEnR |= (1<<SWITCH); //interrupcion por flanco de subida
 
     NVIC_EnableIRQ(EINT3_IRQn);
-    
 }
 void EINT3_IRQHandler(void){
     if(LPC_GPIOINT->IO0IntStatR & (1<<SWITCH)){
@@ -89,7 +88,7 @@ void confEINT0(void){
     LPC_PINCON->PINSEL4 |= (1<<20);
 
     LPC_SC->EXTMODE |= (1<<0); //Interrupcion por flanco
-    LPC_SC->EXTPOLAR &= ~(1<<0);
+    LPC_SC->EXTPOLAR &= ~(1<<0); 
     LPC_SC->EXTINT |= (1<<0); //Limpiar la bander de interrupcion
     NVIC_EnableIRQ(EINT0_IRQn);
 }
