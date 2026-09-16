@@ -76,7 +76,7 @@ void confPCB(void)
 void confSysTick(void)
 {
     // Interrupción cada 1 ms
-    SysTick->LOAD = (SystemCoreClock / 100) - 1;
+    SysTick->LOAD = (SystemCoreClock / 1000) - 1;//
 
     // Limpia contador actual
     SysTick->VAL = 0;
