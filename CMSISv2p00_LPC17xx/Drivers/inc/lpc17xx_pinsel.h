@@ -6,19 +6,19 @@
  * @date        21. May. 2010
  * @author      NXP MCU SW Application Team
  *
- * Software that is described herein is for illustrative purposes only
- * which provides customers with programming information regarding the
- * products. This software is supplied "AS IS" without any warranties.
- * NXP Semiconductors assumes no responsibility or liability for the
- * use of the software, conveys no license or title under any patent,
- * copyright, or mask work right to the product. NXP Semiconductors
- * reserves the right to make changes in the software without
- * notification. NXP Semiconductors also make no representation or
- * warranty that such application will be suitable for the specified
- * use without further testing or modification.
+ * Software that is described herein is for illustrative purposes only which provides customers with
+ * programming information regarding the products. This software is supplied "AS IS" without any
+ * warranties. NXP Semiconductors assumes no responsibility or liability for the use of the
+ * software, conveys no license or title under any patent, copyright, or mask work right to the
+ * product. NXP Semiconductors reserves the right to make changes in the software without
+ * notification. NXP Semiconductors also make no representation or warranty that such application
+ * will be suitable for the specified use without further testing or modification.
+ *
+ * @par Refactor:
+ * Last update: 20/02/2026, Author: David Trujillo Medina
  */
 
-/* Peripheral group ----------------------------------------------------------- */
+/* ---------------------------- Peripheral group ---------------------------- */
 /** @defgroup PINSEL PINSEL
  * @ingroup LPC1700CMSIS_FwLib_Drivers
  * @{
@@ -27,25 +27,28 @@
 #ifndef LPC17XX_PINSEL_H_
 #define LPC17XX_PINSEL_H_
 
-/* Includes ------------------------------------------------------------------- */
+/* -------------------------------- Includes -------------------------------- */
 #include "lpc17xx.h"
+#include "lpc17xx_common.h"
 #include "lpc_types.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/* Private Macros -------------------------------------------------------------- */
+/* ----------------------------- Private Macros ----------------------------- */
 /** @defgroup PINSEL_Private_Macros PINSEL Private Macros
  * @{
  */
 
-/* ------------------- MACROS MASKS DEFINITIONS ------------------------- */
-#define PINSEL_FUNC_MASK            ((0x3UL))  /**< Function selection mask. */
-#define PINSEL_PIN_MASK             ((0x1UL))  /** Pin selection mask. */
+/* ------------------------ MACROS MASKS DEFINITIONS ------------------------ */
+#define PINSEL_FUNC_MASK     ((0x3UL)) /**< Function selection mask. */
+#define PINSEL_RES_MODE_MASK ((0x3UL)) /**< Resistor mode selection mask. */
+#define PINSEL_PIN_MASK      ((0x1UL)) /** Pin selection mask. */
+#define PINSEL_OD_MASK       ((0x1UL)) /**< Open-drain mode selection mask. */
 
-/* ------------------- MACROS BIT DEFINITIONS ------------------------- */
-#define PINSEL_TRACE_POS            ((0x3UL))  /**< Trace pin position. */
+/* ------------------------- MACROS BIT DEFINITIONS ------------------------- */
+#define PINSEL_TRACE_POS ((0x3UL)) /**< Trace pin position. */
 
 /* Pin selection define */
 /* I2C Pin Configuration register bit description */
@@ -58,75 +61,22 @@ extern "C" {
  * @}
  */
 
-/* Public Types --------------------------------------------------------------- */
+/* ------------------------------ Public Types ------------------------------ */
 /** @defgroup PINSEL_Public_Types PINSEL Public Types
  * @{
  */
 
 /**
- * @brief Port selection for PINSEL.
- */
-typedef enum {
-    PINSEL_PORT_0 = 0,
-    PINSEL_PORT_1,
-    PINSEL_PORT_2,
-    PINSEL_PORT_3,
-    PINSEL_PORT_4
-} PINSEL_PORT_OPT;
-/** Check PINSEL port option parameter. */
-#define PARAM_PINSEL_PORT(port) ((port) >= PINSEL_PORT_0 && (port) <= PINSEL_PORT_4)
-
-/**
- * @brief Pin selection for PINSEL (0-31).
- */
-typedef enum {
-    PINSEL_PIN_0 = 0,
-    PINSEL_PIN_1,
-    PINSEL_PIN_2,
-    PINSEL_PIN_3,
-    PINSEL_PIN_4,
-    PINSEL_PIN_5,
-    PINSEL_PIN_6,
-    PINSEL_PIN_7,
-    PINSEL_PIN_8,
-    PINSEL_PIN_9,
-    PINSEL_PIN_10,
-    PINSEL_PIN_11,
-    PINSEL_PIN_12,
-    PINSEL_PIN_13,
-    PINSEL_PIN_14,
-    PINSEL_PIN_15,
-    PINSEL_PIN_16,
-    PINSEL_PIN_17,
-    PINSEL_PIN_18,
-    PINSEL_PIN_19,
-    PINSEL_PIN_20,
-    PINSEL_PIN_21,
-    PINSEL_PIN_22,
-    PINSEL_PIN_23,
-    PINSEL_PIN_24,
-    PINSEL_PIN_25,
-    PINSEL_PIN_26,
-    PINSEL_PIN_27,
-    PINSEL_PIN_28,
-    PINSEL_PIN_29,
-    PINSEL_PIN_30,
-    PINSEL_PIN_31
-} PINSEL_PIN_OPT;
-/** Check PINSEL pin option parameter. */
-#define PARAM_PINSEL_PIN(pin) ((pin) >= PINSEL_PIN_0 && (pin) <= PINSEL_PIN_31)
-
-/**
  * @brief Pin function selection for PINSEL.
  */
 typedef enum {
-    PINSEL_FUNC_0 = 0,
-    PINSEL_FUNC_1,
-    PINSEL_FUNC_2,
-    PINSEL_FUNC_3
-} PINSEL_FUNC_OPT;
+    PINSEL_FUNC_00 = 0,
+    PINSEL_FUNC_01 = 1,
+    PINSEL_FUNC_10 = 2,
+    PINSEL_FUNC_11 = 3
+} PINSEL_FUNC;
 /** Check PINSEL function option parameter. */
-#define PARAM_PINSEL_FUNC(func) ((func) >= PINSEL_FUNC_0 && (func) <= PINSEL_FUNC_3)
+#define PARAM_PINSEL_FUNC(FUNC) ((FUNC) >= PINSEL_FUNC_00 && (FUNC) <= PINSEL_FUNC_11)
 
 /**
  * @brief Pin mode selection for PINSEL.
@@ -136,19 +86,9 @@ typedef enum {
     PINSEL_REPEATER,
     PINSEL_TRISTATE,
     PINSEL_PULLDOWN
-} PINSEL_PINMODE_OPT;
+} PINSEL_MODE;
 /** Check PINSEL pin mode option parameter. */
-#define PARAM_PINSEL_PINMODE(mode) ((mode) >= PINSEL_PULLUP && (mode) <= PINSEL_PULLDOWN)
-
-/**
- * @brief Open drain mode selection for PINSEL.
- */
-typedef enum {
-    PINSEL_OD_NORMAL = 0,
-    PINSEL_OD_OPENDRAIN
-} PINSEL_OD_OPT;
-/** Check PINSEL open drain mode option parameter. */
-#define PARAM_PINSEL_OD(od) ((od) == PINSEL_OD_NORMAL || (od) == PINSEL_OD_OPENDRAIN)
+#define PARAM_PINSEL_MODE(MODE) ((MODE) >= PINSEL_PULLUP && (MODE) <= PINSEL_PULLDOWN)
 
 /**
  * @brief I2C drive mode selection for PINSEL.
@@ -156,84 +96,75 @@ typedef enum {
 typedef enum {
     PINSEL_I2C_NORMAL = 0,
     PINSEL_I2C_FAST
-} PINSEL_I2C_MODE_OPT;
+} PINSEL_I2C_MODE;
 /** Check PINSEL I2C mode option parameter. */
-#define PARAM_PINSEL_I2C_MODE(i2c) ((i2c) == PINSEL_I2C_NORMAL || (i2c) == PINSEL_I2C_FAST)
+#define PARAM_PINSEL_I2C_MODE(MODE) ((MODE) == PINSEL_I2C_NORMAL || (MODE) == PINSEL_I2C_FAST)
 
 /**
  * @brief Pin configuration structure.
  */
 typedef struct {
-    PINSEL_PORT_OPT     portNum;    /**< PINSEL_PORT_x [0...4]. */
-    PINSEL_PIN_OPT      pinNum;     /**< PINSEL_PIN_x [0...31]. */
-    PINSEL_FUNC_OPT     funcNum;    /**< PINSEL_FUNC_x [0...3]. */
-    PINSEL_PINMODE_OPT  pinMode;    /**< Should be:
-                                    - PINSEL_PULLUP : Internal pull-up resistor.
-                                    - PINSEL_REPEATER : Repeater mode.
-                                    - PINSEL_TRISTATE : Tri-state.
-                                    - PINSEL_PULLDOWN : Internal pull-down resistor. */
-    PINSEL_OD_OPT  openDrain;       /**< Should be:
-                                    - PINSEL_OD_NORMAL : Pin is in the normal (not open drain) mode.
-                                    - PINSEL_OD_OPENDRAIN : Pin is in the open drain mode. */
-} PINSEL_CFG_Type;
+    LPC_PORT port;             /**< PORT_x [0...4]. */
+    LPC_PIN pin;               /**< PIN_x [0...31]. */
+    PINSEL_FUNC func;          /**< PINSEL_FUNC_x [00...11]. */
+    PINSEL_MODE mode;          /**< Should be:
+                               - PINSEL_PULLUP : Internal pull-up resistor.
+                               - PINSEL_REPEATER : Repeater mode.
+                               - PINSEL_TRISTATE : Tri-state.
+                               - PINSEL_PULLDOWN : Internal pull-down resistor. */
+    FunctionalState openDrain; /**< Should be:
+                               - ENABLE : Open-drain mode enabled.
+                               - DISABLE : Open-drain mode disabled (normal mode). */
+} PINSEL_CFG_T;
 
 /**
  * @}
  */
 
-/* Public Functions ----------------------------------------------------------- */
+/* ---------------------------- Public Functions ---------------------------- */
 /** @defgroup PINSEL_Public_Functions PINSEL Public Functions
  * @{
  */
 
 /**
- * @brief       Configures the pin according to the parameters in pinCfg.
+ * @brief Configures the function, resistor mode, and open-drain setting for a single pin.
  *
- * @param[in]   pinCfg  Pointer to a PINSEL_CFG_Type structure that contains
- *                      the configuration information for the specified pin.
+ * Sets the PINSEL register to select the peripheral function, the PINMODE register
+ * to define the internal pull-up/pull-down state, and the PINMODE_OD register
+ * to enable or disable open-drain mode.
+ *
+ * @param pinCfg Pointer to a PINSEL_CFG_T structure containing the pin configuration.
  */
-void PINSEL_ConfigPin(const PINSEL_CFG_Type* pinCfg);
+void PINSEL_ConfigPin(const PINSEL_CFG_T* pinCfg);
 
 /**
- * @brief       Configures multiple pins according to the parameters in
- *              pinCfg and the pins mask.
+ * @brief Configures multiple pins on the same port with identical settings.
  *
- * @param[in]   pinCfg  Pointer to a PINSEL_CFG_Type structure containing
- *                      the base configuration for the pins.
- * @param[in]   pins    32-bit value where each bit set to 1 indicates that
- *                      the corresponding pin (0-31) will be configured.
+ * Iterates through a 32-bit mask and applies the specified function, resistor mode, and open-drain settings to every pin identified in the mask.
  *
- * @note        For each bit set in pins, the corresponding pin is configured
- *              using the parameters from pinCfg, except that the pinNum field in
- *              the original pinCfg is ignored and set automatically for each pin.
+ * @param pinCfg  Pointer to a PINSEL_CFG_T configuration structure (pin field is ignored).
+ * @param pinMask A 32-bit mask representing the pins to be configured.
  */
-void PINSEL_ConfigMultiplePins(const PINSEL_CFG_Type* pinCfg, uint32_t pins);
+void PINSEL_ConfigMultiplePins(const PINSEL_CFG_T* pinCfg, uint32_t pinMask);
 
 /**
- * @brief       Configures the trace function.
+ * @brief Enables or disables the ETM Trace port function.
  *
- * @param[in]   newState Must be:
- *                       - ENABLE : Enable Trace Function.
- *                       - DISABLE : Disable Trace Function.
+ * Modifies the PINSEL10 register to enable or disable the hardware trace functionality. When enabled, specific pins are dedicated to the trace port for debugging and instruction tracking.
+ *
+ * @param newState ENABLE to activate trace, DISABLE to return pins to default GPIO.
  */
 void PINSEL_ConfigTraceFunc(FunctionalState newState);
 
 /**
- * @brief       Configures the I2C pins according to the specified parameters.
+ * @brief Configures the hardware characteristics for I2C pins.
  *
- * @param[in]   driveMode Should be one of the following:
- *                        - PINSEL_I2C_NORMAL : Standard drive mode.
- *                        - PINSEL_I2C_FAST   : Fast Mode Plus drive mode.
+ * Updates the I2CPADCFG register to control the drive mode (Standard/Fast) and the glitch filter/slew rate for the dedicated I2C pins (P0.27 and P0.28).
  *
- * @param[in]   filterSlewRate Should be:
- *                             - ENABLE  : Enables filter and slew rate control.
- *                             - DISABLE : Disables filter and slew rate control.
- *
- * @note        If filterSlewRate is DISABLE, the driveMode parameter
- *              is ignored and both pins are configured as standard drive mode
- *              (PINSEL_I2C_NORMAL) with filter and slew rate control disabled.
+ * @param driveMode      Sets the pad drive strength (PINSEL_I2C_NORMAL or PINSEL_I2C_FAST).
+ * @param filterSlewRate ENABLE or DISABLE the glitch filter and slew rate control.
  */
-void PINSEL_SetI2CPins(PINSEL_I2C_MODE_OPT driveMode, FunctionalState filterSlewRate);
+void PINSEL_SetI2CPins(PINSEL_I2C_MODE driveMode, FunctionalState filterSlewRate);
 
 /**
  * @}
@@ -243,10 +174,10 @@ void PINSEL_SetI2CPins(PINSEL_I2C_MODE_OPT driveMode, FunctionalState filterSlew
 }
 #endif
 
-#endif // LPC17XX_PINSEL_H_
+#endif  // LPC17XX_PINSEL_H_
 
 /**
  * @}
  */
 
-/* --------------------------------- End Of File ------------------------------ */
+/* ------------------------------ End Of File ------------------------------- */

@@ -1,0 +1,75 @@
+#include "lpc17xx.h"
+#include "lpc17xx_adc.h"
+#include "lpc17xx_timer.h"
+#include "lpc17xx_dac.h"
+#include "lpc17xx_pinsel.h"
+#include "lpc17xx_gpio.h"
+#include "lpc17xx_nvic.h"
+
+#define LM35_1  23
+#define LM35_2  24
+#define PB1     10
+#define PB2     11
+#define AOUT    26
+
+void confPINES(void);
+void confADC_DAC(void);
+void confTIMER0(void);
+
+
+int main(){
+    
+    void confPINES();
+    void confADC_DAC();
+    void confTIMER0();
+    
+    while(1){
+        __WFI
+    }
+}
+
+void confPINES(void){
+    //PUERTO P0.23
+    PINSEL_CFG_Type PinCfg;
+
+    PinCfg.portNum= PINSEL_PORT_0;
+    PinCfg.pinNum=  LM35_1;
+    PinCfg.funcNum= PINSEL_FUNC_1;
+    PinCfg.pinMode= PINSEL_TRISTATE;
+    PinCfg.openDrain= PINSEL_OD_NORMAL;
+
+    PINSEL_ConfigPin(&PinCfg);
+    //PUERTO P0.24
+    PinCfg.pinNum=  LM35_2;
+    PINSEL_ConfigPin(&PinCfg);
+    //salida del DAC
+    PinCfg.pinNum=  AOUT;
+    PinCfg.funcNum=PINSEL_FUNC_2;
+    PINSEL_ConfigPin(&PinCfg);
+    //GPIO de los pulsadores
+    PinCfg.portNum=PINSEL_PORT_2;
+    PinCfg.pinNum=PB1;
+    PinCfg.funcNum=PINSEL_FUNC_0;
+    PinCfg.pinMode=PINSEL_PULLUP;
+    PINSEL_ConfigPin(&PinCfg);
+    PinCfg.pinNum=PB2;
+    PINSEL_ConfigPin(&PinCfg);
+    //configuro como entradas
+    GPIO_SetDir(GPIO_PORT_2,1<<PB1,GPIO_INPUT);
+    GPIO_SetDir(GPIO_PORT_2,1<<PB2,GPIO_INPUT);
+}
+void configADC_DAC(void){
+    ADC_Init(200000);//inicia el adc con una frecuencia de 200khz
+    ADC_BurstCmd(DISABLE);//desabilitamos el modo burst
+    ADC_StartCmd(ADC_START_ON_MAT01);//iniciamos la conversion del adc con el timer0 
+    ADC_EdgeStartConfig(ADC_START_ON_FALLING);//Conversion por flanco de bajada
+    
+    ADC_ChannelCmd(ADC_CHANNEL_0,ENABLE);//habilitamos el canal 0 (AD0.0)
+    ADC_ChannelCmd(ADC_CHANNEL_1,DISABLE);//habilitamos el canal 1 (AD0.1)
+    ADC_IntEnable(ADC_INT_GLOBAL);//Hablitacion de interrupcion cuando finaliza la conversion
+
+    NVIC_EnableIRQ(ADC_IRQn);
+
+    DAC_Init();
+
+}

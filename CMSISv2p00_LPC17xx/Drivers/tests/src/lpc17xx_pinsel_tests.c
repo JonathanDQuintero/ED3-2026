@@ -8,7 +8,7 @@
 
 #include "lpc17xx_pinsel_tests.h"
 
-static PINSEL_CFG_Type pinCfg = {0};
+static PINSEL_CFG_T pinCfg = {0};
 
 uint8_t PINSEL_ConfigPinFunctionLowTest(void);
 uint8_t PINSEL_ConfigPinFunctionHighTest(void);
@@ -22,8 +22,8 @@ uint8_t PINSEL_ConfigMultiplePinsTest(void);
  *        for ports 0, 1, and 2.
  */
 void PINSEL_Setup(void) {
-    for (uint8_t i=0; i < 5; i++) {
-        *(&LPC_PINCON->PINSEL0 + i) = 0x0;
+    for (uint8_t i = 0; i < 5; i++) {
+        *(&LPC_PINCON->PINSEL0 + i)  = 0x0;
         *(&LPC_PINCON->PINMODE0 + i) = 0x0;
     }
     for (uint8_t i = 0; i < 3; i++) {
@@ -31,9 +31,7 @@ void PINSEL_Setup(void) {
     }
 }
 
-void PINSEL_TearDown(void) {
-
-}
+void PINSEL_TearDown(void) {}
 
 void PINSEL_RunTests(void) {
     RUN_TESTS_INIT();
@@ -54,10 +52,10 @@ uint8_t PINSEL_ConfigPinFunctionLowTest(void) {
     PINSEL_Setup();
     TEST_INIT();
 
-    pinCfg.pinNum = PINSEL_PIN_2;
-    pinCfg.funcNum = PINSEL_FUNC_2;
+    pinCfg.pin  = PIN_2;
+    pinCfg.func = PINSEL_FUNC_10;
     PINSEL_ConfigPin(&pinCfg);
-    EXPECT_EQUAL(((LPC_PINCON->PINSEL0 >> (pinCfg.pinNum * 2)) & 0x3), pinCfg.funcNum);
+    EXPECT_EQUAL(((LPC_PINCON->PINSEL0 >> (pinCfg.pin * 2)) & 0x3), pinCfg.func);
 
     ASSERT_TEST();
 }
@@ -66,11 +64,11 @@ uint8_t PINSEL_ConfigPinFunctionHighTest(void) {
     PINSEL_Setup();
     TEST_INIT();
 
-    pinCfg.pinNum = PINSEL_PIN_19;
-    pinCfg.funcNum = PINSEL_FUNC_2;
+    pinCfg.pin  = PIN_19;
+    pinCfg.func = PINSEL_FUNC_10;
     PINSEL_ConfigPin(&pinCfg);
 
-    EXPECT_EQUAL(((LPC_PINCON->PINSEL1 >> ((pinCfg.pinNum - 16) * 2)) & 0x3), pinCfg.funcNum);
+    EXPECT_EQUAL(((LPC_PINCON->PINSEL1 >> ((pinCfg.pin - 16) * 2)) & 0x3), pinCfg.func);
 
     ASSERT_TEST();
 }
@@ -79,11 +77,11 @@ uint8_t PINSEL_ConfigPinModeLowTest(void) {
     PINSEL_Setup();
     TEST_INIT();
 
-    pinCfg.pinNum = PINSEL_PIN_3;
-    pinCfg.pinMode = PINSEL_TRISTATE;
+    pinCfg.pin  = PIN_3;
+    pinCfg.mode = PINSEL_TRISTATE;
     PINSEL_ConfigPin(&pinCfg);
 
-    EXPECT_EQUAL(((LPC_PINCON->PINMODE0 >> (pinCfg.pinNum * 2)) & 0x3), pinCfg.pinMode);
+    EXPECT_EQUAL(((LPC_PINCON->PINMODE0 >> (pinCfg.pin * 2)) & 0x3), pinCfg.mode);
 
     ASSERT_TEST();
 }
@@ -92,11 +90,11 @@ uint8_t PINSEL_ConfigPinModeHighTest(void) {
     PINSEL_Setup();
     TEST_INIT();
 
-    pinCfg.pinNum = PINSEL_PIN_16;
-    pinCfg.pinMode = PINSEL_TRISTATE;
+    pinCfg.pin  = PIN_16;
+    pinCfg.mode = PINSEL_TRISTATE;
     PINSEL_ConfigPin(&pinCfg);
 
-    EXPECT_EQUAL(((LPC_PINCON->PINMODE1 >> ((pinCfg.pinNum - 16) * 2)) & 0x3), pinCfg.pinMode);
+    EXPECT_EQUAL(((LPC_PINCON->PINMODE1 >> ((pinCfg.pin - 16) * 2)) & 0x3), pinCfg.mode);
 
     ASSERT_TEST();
 }
@@ -105,11 +103,11 @@ uint8_t PINSEL_ConfigPinODTest(void) {
     PINSEL_Setup();
     TEST_INIT();
 
-    pinCfg.pinNum = PINSEL_PIN_17;
-    pinCfg.openDrain = PINSEL_OD_OPENDRAIN;
+    pinCfg.pin       = PIN_17;
+    pinCfg.openDrain = ENABLE;
     PINSEL_ConfigPin(&pinCfg);
 
-    EXPECT_EQUAL(((LPC_PINCON->PINMODE_OD0 >> pinCfg.pinNum) & 0x1), pinCfg.openDrain);
+    EXPECT_EQUAL(((LPC_PINCON->PINMODE_OD0 >> pinCfg.pin) & 0x1), pinCfg.openDrain);
 
     ASSERT_TEST();
 }
@@ -118,10 +116,10 @@ uint8_t PINSEL_ConfigMultiplePinsTest(void) {
     PINSEL_Setup();
     TEST_INIT();
 
-    pinCfg.portNum = PINSEL_PORT_0;
-    pinCfg.funcNum = PINSEL_FUNC_1;
-    pinCfg.pinMode = PINSEL_REPEATER;
-    pinCfg.openDrain = PINSEL_OD_OPENDRAIN;
+    pinCfg.port      = PORT_0;
+    pinCfg.func      = PINSEL_FUNC_01;
+    pinCfg.mode      = PINSEL_REPEATER;
+    pinCfg.openDrain = ENABLE;
 
     PINSEL_ConfigMultiplePins(&pinCfg, 0x00F003FF);
 
@@ -136,4 +134,4 @@ uint8_t PINSEL_ConfigMultiplePinsTest(void) {
     ASSERT_TEST();
 }
 
-#endif // UNIT_TESTING_ENABLED
+#endif  // UNIT_TESTING_ENABLED
