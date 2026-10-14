@@ -156,9 +156,9 @@ void confTIMER0(void){
 
 }
 void confSysTick(void){
-    SYSTICK_InternalInit(1);
-    SYSTICK_IntCmd(ENABLE);
-    SYSTICK_Cmd(ENABLE);
+    SYSTICK_InternalInit(1);//configurado a 1ms
+    SYSTICK_IntCmd(ENABLE);//configuramos la interrupcion del systick
+    SYSTICK_Cmd(ENABLE);//habilitamos el systick
 
 
 }
@@ -169,16 +169,16 @@ void SysTick_Handler(void){
     uint8_t lecturaPB2;
     uint32_t puerto2;
 
-    puerto2 = GPIO_ReadValue(GPIO_PORT_2);
+    puerto2 = GPIO_ReadValue(GPIO_PORT_2);//lectura del puerto 2
 
     /* Lectura instantánea */
-    if((puerto2 & (1 << PB1)) == 0){
+    if((puerto2 & (1 << PB1)) == 0){// Si el bit PB1 es 0, significa que el pulsador está presionado
         lecturaPB1 = 0;
     }else{
         lecturaPB1 = 1;
     }
 
-    if((puerto2 & (1 << PB2)) == 0){
+    if((puerto2 & (1 << PB2)) == 0){// Si el bit PB2 es 0, significa que el pulsador está presionado
         lecturaPB2 = 0;
     }else{
         lecturaPB2 = 1;
@@ -186,11 +186,11 @@ void SysTick_Handler(void){
 
 
     /* Antirrebote PB1 */
-    if(lecturaPB1 != estadoPB1){
+    if(lecturaPB1 != estadoPB1){// Si la lectura instantánea es diferente al estado actual del pulsador
 
         contadorPB1++;
 
-        if(contadorPB1 >= 20){
+        if(contadorPB1 >= 20){// Si el contador alcanza 20, significa que el pulsador ha estado estable durante 20 ms
             estadoPB1 = lecturaPB1;
             contadorPB1 = 0;
         }
@@ -237,7 +237,6 @@ void ADC_IRQHandler(void){
             indice0=0;
         }
         
-
         ADC_ChannelDisable(ADC_CHANNEL_0);
         ADC_ChannelEnable(ADC_CHANNEL_1);
         CANAL=1;
