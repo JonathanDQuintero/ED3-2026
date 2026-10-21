@@ -126,7 +126,7 @@ void confADC_DAC(void){
     ADC_EdgeStartConfig(ADC_START_ON_FALLING);//Conversion por flanco de bajada
     
     ADC_ChannelEnable(ADC_CHANNEL_0);//habilitamos el canal 0 (AD0.0)
-    ADC_ChannelDisable(ADC_CHANNEL_1);//habilitamos el canal 1 (AD0.1)
+    ADC_ChannelDisable(ADC_CHANNEL_1);//Desabilitamos el canal 1 (AD0.1)
     ADC_IntEnable(ADC_INT_GLOBAL);//Hablitacion de interrupcion cuando finaliza la conversion
 
     NVIC_EnableIRQ(ADC_IRQn);

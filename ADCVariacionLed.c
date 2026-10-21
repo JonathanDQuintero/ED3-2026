@@ -24,12 +24,12 @@ int main(void){
     }
 }
 void confgGPIO(void){
-    PINSEL_CFG_Type PinCfg;//
-    PinCfg.funcNum =PINSEL_FUNC_1; // funcion 1 del pin
-    PinCfg.openDrain = PINSEL_OD_NORMAL; // sin open drain
-    PinCfg.pinMode = PINSEL_TRISTATE; // sin pull-up ni pull-down
-    PinCfg.pinNum = 23; // pin 23 del puerto 0
-    PinCfg.portNum = 0; // puerto 0
+    PINSEL_CFG_T PinCfg;//
+    PinCfg.func =PINSEL_FUNC_01; // funcion 1 del pin
+    PinCfg.openDrain = DISABLE; // sin open drain
+    PinCfg.Mode = PINSEL_TRISTATE; // sin pull-up ni pull-down
+    PinCfg.pin= PIN_23; // pin 23 del puerto 0
+    PinCfg.port = PORT_0; // puerto 0
     PINSEL_ConfigPin(&PinCfg); // llamo a la funcion que configura el pin
  // -------- ROJO P0.22 --------
     // Función GPIO
@@ -75,8 +75,9 @@ void confgGPIO(void){
 }
 void confgADC(void){
     ADC_Init(100000);// Inicia en 100khz
-    ADC_ChannelCmd(ADC_CHANNEL_0,ENABLE);//Canal 0
-    ADC_IntConfig(ADC_ADINTEN0, ENABLE);
+    ADC_ChannelEnable(ADC_CHANNEL_0);//Canal 0
+    ADC_IntEnable(ADC_INT_CH0);
+    
     NVIC_EnableIRQ(ADC_IRQn);
     ADC_BurstCmd(ENABLE);// habilitamos modo rafaga
 }
