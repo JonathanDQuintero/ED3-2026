@@ -8,17 +8,19 @@
 #define RED_LED     22
 #define GREEN_LED   25
 #define BLUE_LED    26
+
 static volatile uint32_t VOLT=0;
 
 
 void confgADC(void);
 void confgDAC(void);
+void confgGPIO(void);
 
 
 int main(void){
 	 confgGPIO();
 	 confgADC();
-	
+
     while(1){
 
     }
@@ -27,10 +29,11 @@ void confgGPIO(void){
     PINSEL_CFG_T PinCfg;//
     PinCfg.func =PINSEL_FUNC_01; // funcion 1 del pin
     PinCfg.openDrain = DISABLE; // sin open drain
-    PinCfg.Mode = PINSEL_TRISTATE; // sin pull-up ni pull-down
+    PinCfg.mode = PINSEL_TRISTATE; // sin pull-up ni pull-down
     PinCfg.pin= PIN_23; // pin 23 del puerto 0
     PinCfg.port = PORT_0; // puerto 0
     PINSEL_ConfigPin(&PinCfg); // llamo a la funcion que configura el pin
+
  // -------- ROJO P0.22 --------
     // Función GPIO
     LPC_PINCON->PINSEL1 &= ~(3 << 12);
@@ -75,28 +78,41 @@ void confgGPIO(void){
 }
 void confgADC(void){
     ADC_Init(100000);// Inicia en 100khz
+    ADC_PinConfig(ADC_CHANNEL_0);
     ADC_ChannelEnable(ADC_CHANNEL_0);//Canal 0
     ADC_IntEnable(ADC_INT_CH0);
-    
+
     NVIC_EnableIRQ(ADC_IRQn);
-    ADC_BurstCmd(ENABLE);// habilitamos modo rafaga
+    ADC_BurstEnable();// habilitamos modo rafaga
 }
 void ADC_IRQHandler(void){
-        VOLT=ADC_ChannelGetData(ADC_CHANNEL_0);
-        if(VOLT>3723){
-            GPIO_ClearPins(0,22);//Led rojo encendido
-            GPIO_SetPins(3,25);//apgado verde
-            GPIO_SetPins(3,26);//apagado azul
-        }else if(VOLT<1240){
-            GPIO_ClearPins(3,25);//encendido VERDE
-            GPIO_SetPins(0,22);//apgado ROJO
-            GPIO_SetPins(3,26);//apagado azul
-        }else{
-            GPIO_ClearPins(3,25);//encendido VERDE
-            GPIO_ClearPins(0,22);//enciende ROJO
-            GPIO_SetPins(3,26);//apagado azul
-        }
 
+    VOLT = ADC_ChannelGetData(ADC_CHANNEL_0);
+
+    if(VOLT > 3723){
+
+        // ROJO encendido
+        GPIO_ClearPins(PORT_0, (1UL << RED_LED));
+
+        GPIO_SetPins(PORT_3, (1UL << GREEN_LED) |
+                             (1UL << BLUE_LED));
+    }
+    else if(VOLT < 1240){
+
+        // VERDE encendido
+        GPIO_ClearPins(PORT_3, (1UL << GREEN_LED));
+
+        GPIO_SetPins(PORT_0, (1UL << RED_LED));
+        GPIO_SetPins(PORT_3, (1UL << BLUE_LED));
+    }
+    else{
+
+        // AMARILLO = ROJO + VERDE
+        GPIO_ClearPins(PORT_0, (1UL << RED_LED));
+        GPIO_ClearPins(PORT_3, (1UL << GREEN_LED));
+
+        GPIO_SetPins(PORT_3, (1UL << BLUE_LED));
+    }
 }
 
 
