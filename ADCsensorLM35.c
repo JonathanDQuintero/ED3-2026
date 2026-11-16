@@ -123,7 +123,7 @@ void confADC_DAC(void){
     ADC_Init(200000);//inicia el adc con una frecuencia de 200khz
     ADC_BurstDisable();//desabilitamos el modo burst
     ADC_StartCmd(ADC_START_ON_MAT01);//iniciamos la conversion del adc con el timer0 
-    ADC_EdgeStartConfig(ADC_START_ON_FALLING);//Conversion por flanco de bajada
+    ADC_EdgeStartConfig(ADC_START_ON_FALLING);//Conversion por flanco de subida
     
     ADC_ChannelEnable(ADC_CHANNEL_0);//habilitamos el canal 0 (AD0.0)
     ADC_ChannelDisable(ADC_CHANNEL_1);//Desabilitamos el canal 1 (AD0.1)

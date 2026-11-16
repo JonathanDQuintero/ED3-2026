@@ -44,14 +44,14 @@ void confPCB(void){
     LPC_PINCON->PINMODE7 |= (2<<20);
 
     //Configuracion de los pines como salida
-    LPC_GPIO0->FIODIR |=1 <<RED_LED;
-    LPC_GPIO0->FIOSET = 1 <<RED_LED; //Como es salida y es activo por bajo, lo ponemos en 1 para que comience apagado
+    LPC_GPIO0->FIODIR |= (1<<RED_LED);
+    LPC_GPIO0->FIOSET = 1<<RED_LED; //Como es salida y es activo por bajo, lo ponemos en 1 para que comience apagado
 
-    LPC_GPIO3->FIODIR |=1 <<GREEN_LED;
-    LPC_GPIO3->FIOSET = 1 <<GREEN_LED;
+    LPC_GPIO3->FIODIR |= (1<<GREEN_LED);
+    LPC_GPIO3->FIOSET = 1<<GREEN_LED;
 
-    LPC_GPIO3->FIODIR |=1 <<BLUE_LED;
-    LPC_GPIO3->FIOSET = 1 <<BLUE_LED;
+    LPC_GPIO3->FIODIR |= (1<<BLUE_LED);
+    LPC_GPIO3->FIOSET = 1<<BLUE_LED;
 }
 
 void confSystick(void){

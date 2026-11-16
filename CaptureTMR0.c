@@ -75,7 +75,7 @@ void confTimer0(void){
 void TIMER0_IRQHandler(void){
 
     static uint8_t primera_captura = 1;
-    uint32_t captura_actual;
+    static uint32_t captura_actual;
 
     // IR bit 4 -> interrupción CAP0.0
     if(LPC_TIM0->IR & (1 << 4)){
