@@ -197,9 +197,6 @@ flowchart TD
     style DMA_ISR fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#d1fae5
     style UART_ISR fill:#451a03,stroke:#fbbf24,stroke-width:2px,color:#fef3c7
 ```
-![Diagrama de flujo EFFECMASTER9600](docs/diagrama_flujo.svg)
-
-[Ver código fuente del diagrama](docs/diagrama_flujo.mmd)
 **Funcionamiento resumido:**
 
  1. `main()` inicializa GPIO/LED RGB, EINT0, ADC (`CH0` y `CH1`), DAC, Timer0, GPDMA y UART0, asigna prioridades NVIC (`EINT0 = 0`, `UART0 = 1`, `DMA = 2`, `ADC = 4`), precarga `bufferDelay` en `512` y envía el menú de bienvenida por `enviarUART_DMA()`.
