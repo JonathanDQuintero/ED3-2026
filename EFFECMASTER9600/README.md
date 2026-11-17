@@ -278,7 +278,7 @@ Los comandos usan **letras mayúsculas** y se finalizan con retorno de carro o s
 
 **CIRCUITO ARMADO** 
 
-![alt text](<media/imagenes/circuito armado.jpeg>)
+![img width="500" height="600" alt ](<media/imagenes/circuito armado.jpeg>)
 ![alt text](<media/imagenes/circuito armado y parlante.jpeg>)
 
 
