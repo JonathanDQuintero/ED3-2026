@@ -1,0 +1,19 @@
+```mermaid
+flowchart LR
+    A["Salida audio celular<br/>Jack TRS 3,5 mm"] --> B["Acondicionamiento de entrada<br/>Capacitor AC + Divisor resistivo 1,65 V"]
+    B --> C["ADC AD0.0<br/>P0.23"]
+    POT["Potenciómetro<br/>Control Intensidad"] --> C1["ADC AD0.1<br/>P0.24"]
+    T["Timer0 / MAT0.1<br/>~41,66 kHz"] --> C
+    T --> C1
+    C --> P["ADC_IRQHandler<br/>Procesamiento DSP"]
+    C1 --> P
+    P --> D["DAC AOUT<br/>P0.26"]
+    D --> F["Amplificador de potencia<br/>LM386 alimentado a 12 V"]
+    F --> G["Parlante"]
+    H["Pulsador<br/>P2.10 / EINT0"] --> P
+    H --> L["LED RGB<br/>P0.22 / P3.25 / P3.26"]
+    P -->|Memoria a Periférico| DMA["Controlador GPDMA<br/>Canal 0"]
+    DMA --> V["UART0 TX P0.2"]
+    U["PC / Terminal serie"] <-->|UART0 9600 bps| V
+    U -->|Comandos RX P0.3| P
+```

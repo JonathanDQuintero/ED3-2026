@@ -1,0 +1,89 @@
+```mermaid
+flowchart TD
+    %% DEFINICIÓN DE ESTILOS POR COLOR
+    classDef mainBox fill:#0f172a,stroke:#38bdf8,stroke-width:1.5px,color:#f8fafc
+    classDef mainDec fill:#1e293b,stroke:#0284c7,stroke-width:2px,color:#bae6fd
+
+    classDef adcBox fill:#1e1b4b,stroke:#818cf8,stroke-width:1.5px,color:#eef2ff
+    classDef adcDec fill:#312e81,stroke:#6366f1,stroke-width:2px,color:#c7d2fe
+
+    classDef eintBox fill:#4c0519,stroke:#fb7185,stroke-width:1.5px,color:#ffe4e6
+
+    classDef dmaBox fill:#022c22,stroke:#34d399,stroke-width:1.5px,color:#ecfdf5
+    classDef dmaDec fill:#064e3b,stroke:#10b981,stroke-width:2px,color:#a7f3d0
+
+    classDef uartBox fill:#451a03,stroke:#fbbf24,stroke-width:1.5px,color:#fef3c7
+    classDef uartDec fill:#78350f,stroke:#f59e0b,stroke-width:2px,color:#fde68a
+
+    subgraph MAIN ["Programa Principal (main)"]
+        direction TB
+        Start(["Inicio / Reset LPC1769"]):::mainBox --> InitPerif["Inicializar Botón/LED, ADC CH0/CH1,<br/>DAC, Timer0, GPDMA y UART0"]:::mainBox
+        InitPerif --> SetPrio["Configurar prioridades NVIC:<br/>EINT0(0), UART0(1), DMA(2), ADC(4)"]:::mainBox
+        SetPrio --> InitBuf["Llenar bufferDelay[10000] con 512"]:::mainBox
+        InitBuf --> Bienvenida["Enviar menú inicial por enviarUART_DMA()<br/>esperando uartDMABusy == 0"]:::mainBox
+        Bienvenida --> StartT0["Habilitar Timer0 y encender LED Rojo"]:::mainBox
+        StartT0 --> Loop{"Bucle while(1)"}:::mainDec
+        Loop --> CheckBtn{"¿botonPendiente == 1?"}:::mainDec
+        CheckBtn -->|Sí| ClearBtn["botonPendiente = 0<br/>NVIC_ClearPendingIRQ(EINT0)"]:::mainBox
+        CheckBtn -->|No| Loop
+        ClearBtn --> Loop
+    end
+
+    subgraph ADC_ISR ["ADC_IRQHandler (Prioridad 4 - ~41,66 kHz)"]
+        direction TB
+        T0_Trig(["Disparo MAT0.1"]):::adcBox --> IncPot["contadorPot++"]:::adcBox
+        IncPot --> CheckPot{"¿contadorPot >= 4000?"}:::adcDec
+        CheckPot -->|Sí| ReadPot["contadorPot = 0<br/>INTENSIDAD = (AD0.1 * 100) / 4095"]:::adcBox
+        CheckPot -->|No| ReadAudio["muestra = AD0.0 >> 2"]:::adcBox
+        ReadPot --> ReadAudio
+        ReadAudio --> SwitchFx{"switch (EFECTO)"}:::adcDec
+        SwitchFx -->|0: Normal| Fx0["Salida = muestra"]:::adcBox
+        SwitchFx -->|1: Distorsión| Fx1["Saturación no lineal según INTENSIDAD"]:::adcBox
+        SwitchFx -->|2: Fuzz| Fx2["Recorte en límites 4*INTENSIDAD"]:::adcBox
+        SwitchFx -->|3: Bitcrush| Fx3["Desplazamiento (muestra >> CRUSH) << CRUSH"]:::adcBox
+        SwitchFx -->|4: Delay| Fx4["bufferDelay con ECO1 y realimentación ECO2"]:::adcBox
+        SwitchFx -->|5: Whammy| Fx5["bufferWhammy con interpolación y 2 ventanas"]:::adcBox
+        Fx0 --> WriteDAC["DAC_UpdateValue(salida)"]:::adcBox
+        Fx1 --> WriteDAC
+        Fx2 --> WriteDAC
+        Fx3 --> WriteDAC
+        Fx4 --> WriteDAC
+        Fx5 --> WriteDAC
+        WriteDAC --> EndADC(["Fin ADC_IRQHandler"]):::adcBox
+    end
+
+    subgraph EINT_ISR ["EINT0_IRQHandler (Prioridad 0)"]
+        direction TB
+        BtnPress(["Flanco descendente P2.10"]):::eintBox --> NextFx["CambiarEfecto(): EFECTO = (EFECTO + 1) % 6<br/>botonPendiente = 1"]:::eintBox
+        NextFx --> SetLED["Actualizar LED RGB (P0.22, P3.25, P3.26)"]:::eintBox
+        SetLED --> SendDMA["enviarUART_DMA(nombre_efecto)<br/>Configura canal 0 GPDMA -> UART0 THR"]:::eintBox
+        SendDMA --> ClearEINT["Limpiar flag EXTINT0"]:::eintBox
+        ClearEINT --> EndEINT(["Fin EINT0_IRQHandler"]):::eintBox
+    end
+
+    subgraph DMA_ISR ["DMA_IRQHandler (Prioridad 2)"]
+        direction TB
+        DmaInt(["Interrupción GPDMA"]):::dmaBox --> DmaCheck{"¿Error o Terminal Count?"}:::dmaDec
+        DmaCheck -->|Error| DmaErr["Limpiar error, deshabilitar CH0<br/>dmaErrores++, uartDMABusy = 0"]:::dmaBox
+        DmaCheck -->|TC Fin| DmaOk["Limpiar TC, dmaCompletadas++<br/>uartDMABusy = 0"]:::dmaBox
+        DmaErr --> EndDMA(["Fin DMA_IRQHandler"]):::dmaBox
+        DmaOk --> EndDMA
+    end
+
+    subgraph UART_ISR ["UART0_IRQHandler (Prioridad 1)"]
+        direction TB
+        UartRx(["Dato en UART0 RX (P0.3)"]):::uartBox --> IsEnter{"¿Carácter es CR o LF?"}:::uartDec
+        IsEnter -->|No| SaveChar["Guardar en comando[]"]:::uartBox
+        IsEnter -->|Sí| ParseCmd["procesarComando():<br/>Valida S, I, D o A"]:::uartBox
+        SaveChar --> UpdDeriv["Actualizar RETARDO, CRUSH, ECO1 y ECO2"]:::uartBox
+        ParseCmd --> UpdDeriv
+        UpdDeriv --> EndUART(["Fin UART0_IRQHandler"]):::uartBox
+    end
+
+    %% COLORES DE LOS CONTENEDORES (SUBGRAPHS)
+    style MAIN fill:#082f49,stroke:#38bdf8,stroke-width:2px,color:#e0f2fe
+    style ADC_ISR fill:#1e1b4b,stroke:#818cf8,stroke-width:2px,color:#e0e7ff
+    style EINT_ISR fill:#3f0d1e,stroke:#fb7185,stroke-width:2px,color:#ffe4e6
+    style DMA_ISR fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#d1fae5
+    style UART_ISR fill:#451a03,stroke:#fbbf24,stroke-width:2px,color:#fef3c7
+```
