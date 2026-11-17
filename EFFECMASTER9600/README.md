@@ -275,9 +275,11 @@ Los comandos usan **letras mayúsculas** y se finalizan con retorno de carro o s
 
 ## 📊 5. Ensayo, pruebas y resultados.
 
+
 **CIRCUITO ARMADO** 
 
-
+![alt text](<media/imagenes/circuito armado.jpeg>)
+![alt text](<media/imagenes/circuito armado y parlante.jpeg>)
 
 
 
